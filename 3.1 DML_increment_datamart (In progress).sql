@@ -64,7 +64,7 @@ dwh_delta_insert_result AS (
 			-- в этой выборке объединяем две внутренние выборки по расчёту столбцов витрины,
 			-- и применяем оконную функцию для определения самой популярной категории товаров и самого популярного мастера.
 			*,
-			-- Заменил RANK на ROW_NUMBER(), так как критически важно избежать задвоения строк:
+			-- Используем ROW_NUMBER(), так как критически важно избежать задвоения строк:
 			-- Если будет у покупателя два продукта с рангом 1 и два мастера с рангом 1, то это уже 4 строки вместо 1-й
 			ROW_NUMBER() OVER(PARTITION BY T2.customer_id ORDER BY count_product 		  DESC) 	AS rank_count_product,
             ROW_NUMBER() OVER(PARTITION BY T2.customer_id ORDER BY count_craftsman_orders DESC) 	AS rank_count_craftsman_orders
@@ -146,7 +146,7 @@ dwh_delta_update_result AS (
 	FROM (
  		SELECT     -- в этой выборке объединяем две внутренние выборки по расчёту столбцов витрины и применяем оконную функцию для определения самой популярной категории товаров
         	*,
-        	-- Заменил RANK на ROW_NUMBER(), так как критически важно избежать задвоения строк:
+        	-- Используем ROW_NUMBER(), так как критически важно избежать задвоения строк:
             -- Если будет у покупателя два продукта с рангом 1 и два мастера с рангом 1, то это уже 4 строки вместо 1-й
         	ROW_NUMBER() OVER(PARTITION BY T2.customer_id ORDER BY count_product 		  DESC) AS rank_count_product,
         	ROW_NUMBER() OVER(PARTITION BY T2.customer_id ORDER BY count_craftsman_orders DESC) AS rank_count_craftsman_orders                
